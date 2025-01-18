@@ -17,7 +17,7 @@ interface IVideoclub{
 const filmSchema = new Schema<IFilm>({
   name: { type: String, required: true },
   director: { type: String, required: true },
-  length: {type: Number, required: true }
+  length: {type: Number}
 });
 
 const videoclubSchema = new Schema<IVideoclub>({
@@ -37,8 +37,9 @@ async function run() {
   await connect('mongodb://localhost:27017');
 
    // Create a new film
-   await createFilm1({
-    name: 'Medianoche en París',
+   
+ /* await createFilm1({
+    name: 'Medianoche en Paris',
     director: 'Woody Allen',
     length: 94
   });
@@ -54,24 +55,28 @@ async function run() {
     name: 'Videoclub Chaplin',
     boss: 'Carol',
     address: 'c/Rovellada de Dalt 42'
-  });
+  });*/
 
   // Read films
   const films = await getFilms();
   console.log('Films:', films);
 
   // Update a film
-  const updatedFilm = await updateFilm("Medianoche en París", { length: 180 });
-  console.log('Updated Film:', updatedFilm);
+  /*const updatedFilm = await updateFilm('6702fd363aac81372f7c49a1', { length: 180 });
+  console.log('Updated Film:', updatedFilm);*/
   
   // Delete a film
-  const deletedFilm = await deleteFilm("Medianoche en París");
+
+  const deletedFilm = await deleteFilm('6702fd363aac81372f7c49a1');
   console.log('Deleted Film:', deletedFilm);
+
+  const orden = await aggregateFilmsByDirector(95);
+  console.log ('Ordenado:', orden)
 }
 
 // Example of aggregation pipeline
-const aggregationResult = await aggregateFilmsByDirector(90);
-console.log('Aggregation Result:', aggregationResult);
+//const aggregationResult = await aggregateFilmsByDirector(90);
+//console.log('Aggregation Result:', aggregationResult);
 
 //CREATE
 async function createFilm1(filmData: IFilm) {
@@ -92,13 +97,14 @@ async function getFilms() {
   return await Film.find(); // Return all films
 }
 
+
 // UPDATE: Update a film by NAME
 async function updateFilm(id: string, updateData: Partial<IFilm>) {
   return await Film.findByIdAndUpdate(id, updateData, { new: true });
 }
 
 // DELETE: Delete a film by Name
-async function deleteFilm(id: string) {
+async function deleteFilm(id: Object) {
   return await Film.findByIdAndDelete(id);
 }
 
